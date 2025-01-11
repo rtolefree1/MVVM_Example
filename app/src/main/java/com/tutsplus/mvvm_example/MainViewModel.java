@@ -1,5 +1,7 @@
 package com.tutsplus.mvvm_example;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.text.InputType;
@@ -33,9 +35,11 @@ public class MainViewModel extends BaseObservable {
     private FirebaseAuth mAuth;
     private boolean isPasswordVisible = false;
     private MainActivity mainActivity;
+    private Activity activity;
 
-    public MainViewModel(){
+    public MainViewModel(Activity activity){
         model = new Model("","");
+        this.activity = activity;
     }
 
     // getter and setter for Email
@@ -208,54 +212,40 @@ public class MainViewModel extends BaseObservable {
         mAuth = FirebaseAuth.getInstance();
         mAuth.getCurrentUser();
 
-//        mAuth.signInWithEmailAndPassword(model.getUsername().toString(), model.getPassword().toString())
-//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        if (task.isSuccessful()) {
-//// Sign in success, update UI with the signed-in user's information
-//                            Log.d(TAG, "signInWithEmail:success");
-//                            FirebaseUser user = mAuth.getCurrentUser();
-////                            updateUI(user);
-//                        } else {
-//// If sign in fails, display a message to the user.
-//                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-//                            Toast.makeText(mainActivity, "Authentication failed.",
-//                                    Toast.LENGTH_SHORT).show();
-////                            updateUI(null);
-//                        }
-//                    }
-//                });
-//        mAuth.signInWithEmailAndPassword(model.getUsername().toString(), model.getPassword().toString()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>()
-//        {
-//            @Override
-//            public void onComplete(@NonNull Task<AuthResult> task)
-//            {
-////                    Log.d(TAG, "signInWithEmail:success" + task.getResult());
-//                if (task.isSuccessful())
-//                {
-//                    FirebaseUser user = mAuth.getCurrentUser();
-//                    Toast.makeText(mainActivity, "Sign-In Successful", Toast.LENGTH_SHORT).show();
-//                    Log.d("LoginActivity", "signInWithEmail:success");
-////                        Intent intent = new Intent(this, HomePage.class);
-////                        intent.putExtra("username", binding.UserNameEditTextView.getText().toString());
-////                        intent.putExtra("password", binding.PasswordEditTextView.getText().toString());
-//                    clearFields(null);
-////                        startActivity(intent);
-//                    //updateUI(user);
-//                } else
-//                {
-//                    Log.w("LoginActivity", "signInWithEmail:failure", task.getException());
-//                    Toast.makeText(mainActivity, "Authentication Failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-////                        updateUI(null);
-//                }
-////                });
-//
-////        Toast.makeText(this, "Login button clicked", Toast.LENGTH_SHORT).show();
-////        Log.d(TAG, "Login button clicked, username:" + binding.UserNameEditTextView.getText().toString() + ", password:" + binding.PasswordEditTextView.getText().toString());
-//
-//            }
-//        });
+        mAuth.signInWithEmailAndPassword(model.getUsername().toString(), model.getPassword().toString())
+                .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Toast.makeText(mainActivity, "Sign-In Successful", Toast.LENGTH_SHORT).show();
+                            Log.d("LoginActivity", "signInWithEmail:success");
+
+                            // Clear input fields
+                            clearFields(null);
+
+                            // TODO: Uncomment and modify these lines to navigate to your home page
+                            // Intent intent = new Intent(mainActivity, HomePage.class);
+                            // intent.putExtra("username", model.getUsername().toString());
+                            // intent.putExtra("password", model.getPassword().toString());
+                            // startActivity(intent);
+
+                            // TODO: Implement updateUI method if needed
+                            // updateUI(user);
+                        }
+                        else {
+                            // Sign in failed
+                            Log.w("LoginActivity", "signInWithEmail:failure", task.getException());
+                            Toast.makeText(mainActivity,
+                                    "Authentication Failed: " + task.getException().getMessage(),
+                                    Toast.LENGTH_LONG).show();
+
+                            // TODO: Implement updateUI method if needed
+                            // updateUI(null);
+                        }
+                    }
+                });
     }
     public boolean isValidPassword(String password)
     {

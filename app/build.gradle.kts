@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "com.tutsplus.mvvm_example"
-        minSdk = 34
+        minSdk = 31
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
